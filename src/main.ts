@@ -2,10 +2,13 @@ import "./style.css";
 
 import Phaser from "phaser";
 
+import { scenes } from "./scenes";
+
 new Phaser.Game({
   width: 800,
   height: 600,
   title: "RPG Game",
+  scene: scenes,
   url: import.meta.url || "",
   version: import.meta.env.VERSION || "0.0.1",
   backgroundColor: "#000000",
