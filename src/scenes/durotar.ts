@@ -1,9 +1,12 @@
 import Phaser from "phaser";
 
 import durotarJSON from "../../public/maps/durotar.json";
-import { LAYERS, SIZES, TILES } from "../utils/constants";
+import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
+import { Player } from "../entities/player";
 
 export class Durotar extends Phaser.Scene {
+  player: Player | null = null;
+
   constructor() {
     super("Durotar scene");
   }
@@ -11,6 +14,11 @@ export class Durotar extends Phaser.Scene {
   preload(): void {
     this.load.image(TILES.DUROTAR, "maps/durotar.png");
     this.load.tilemapTiledJSON("durotar-map", "maps/durotar.json");
+
+    this.load.spritesheet(SPRITES.PLAYER, "characters/alliance.png", {
+      frameWidth: SIZES.PLAYER.WIDTH,
+      frameHeight: SIZES.PLAYER.HEIGHT,
+    });
   }
 
   create(): void {
@@ -24,5 +32,9 @@ export class Durotar extends Phaser.Scene {
 
     const groundLayer = map.createLayer(LAYERS.GROUND, tileset, 0, 0);
     const wallsLayer = map.createLayer(LAYERS.WALLS, tileset, 0, 0);
+
+    this.player = new Player(this, 400, 250, SPRITES.PLAYER);
   }
+
+  update(time: number, delta: number): void {}
 }
