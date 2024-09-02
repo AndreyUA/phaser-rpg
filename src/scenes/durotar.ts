@@ -36,9 +36,9 @@ export class Durotar extends Phaser.Scene {
     this.player = new Player(this, 400, 250, SPRITES.PLAYER);
   }
 
-  update(time: number, delta: number): void {
+  update(_time: number, delta: number): void {
     // ! time param --> current time in milliseconds from the start of the game
     // ! delta param --> time in milliseconds since the last frame
-    this.player?.update();
+    this.player?.update(delta);
   }
 }

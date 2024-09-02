@@ -14,25 +14,27 @@ export class Player extends Entity {
     this.keys = this.scene.input.keyboard.createCursorKeys();
   }
 
-  update(): void {
+  update(delta: number): void {
     if (!this.keys) {
       return;
     }
 
+    const coordinatesChangesWithDelta = delta / 4;
+
     if (this.keys.left.isDown) {
-      this.x -= 1;
+      this.x -= coordinatesChangesWithDelta;
     }
 
     if (this.keys.right.isDown) {
-      this.x += 1;
+      this.x += coordinatesChangesWithDelta;
     }
 
     if (this.keys.up.isDown) {
-      this.y -= 1;
+      this.y -= coordinatesChangesWithDelta;
     }
 
     if (this.keys.down.isDown) {
-      this.y += 1;
+      this.y += coordinatesChangesWithDelta;
     }
   }
 }
