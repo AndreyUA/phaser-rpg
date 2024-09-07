@@ -5,7 +5,8 @@ import { Entity } from "./entity";
 export class Player extends Entity {
   keys: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   textureKey: string | null = null;
-  private readonly moveSpeed = 50;
+  // TODO: check if the speed is correct
+  private readonly moveSpeed = 10;
 
   constructor(scene: Durotar, x: number, y: number, texture: string) {
     super(scene, x, y, texture, SPRITES.PLAYER);
@@ -18,6 +19,12 @@ export class Player extends Entity {
     const animations = this.scene.anims;
     const animationFrameRate = 9;
     this.textureKey = texture;
+
+    // Set the size and offset of the player to make the collisions more accurate
+    this.setSize(28, 32);
+    this.setOffset(10, 16);
+    // Reduce player's size
+    this.setScale(0.8);
 
     animations.create({
       key: "down",
