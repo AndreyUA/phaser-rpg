@@ -30,10 +30,15 @@ export class Elwynn extends Phaser.Scene {
       SIZES.TILE
     ) as Phaser.Tilemaps.Tileset;
 
-	const groundLayer = map.createLayer(LAYERS.ELWYNN_GROUND, tileset, 0, 0);
-	const wallsLayer = map.createLayer(LAYERS.ELWYNN_WALLS, tileset, 0, 0);
+    const groundLayer = map.createLayer(LAYERS.ELWYNN_GROUND, tileset, 0, 0);
+    const wallsLayer = map.createLayer(LAYERS.ELWYNN_WALLS, tileset, 0, 0);
 
-	this.player = new Player(this, 400, 250, SPRITES.PLAYER);
+    this.player = new Player(this, 400, 250, SPRITES.PLAYER);
+
+    // ! Follow the player with the camera
+    this.cameras.main.startFollow(this.player);
+    // ! Prevent the camera from going out of the map
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
   }
 
   update(_time: number, delta: number): void {
