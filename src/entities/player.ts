@@ -1,4 +1,4 @@
-import { Durotar } from "../scenes/durotar";
+import { Elwynn } from "../scenes/elwynn";
 import { SPRITES } from "../utils/constants";
 import { Entity } from "./entity";
 
@@ -8,7 +8,7 @@ export class Player extends Entity {
   // TODO: check if the speed is correct
   private readonly moveSpeed = 10;
 
-  constructor(scene: Durotar, x: number, y: number, texture: string) {
+  constructor(scene: Elwynn, x: number, y: number, texture: string) {
     super(scene, x, y, texture, SPRITES.PLAYER);
 
     if (!this.scene.input.keyboard) {

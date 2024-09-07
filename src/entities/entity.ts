@@ -8,7 +8,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite {
     texture: string,
     type?: string
   ) {
-    super(scene, x, y, "player");
+    super(scene, x, y, texture);
 
     this.scene = scene;
     this.scene.add.existing(this);

@@ -3,9 +3,11 @@ import Phaser from "phaser";
 import summerJSON from "../../public/maps/summer.json";
 import { Player } from "../entities/player";
 import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
+import { Enemy } from "../entities/enemy";
 
 export class Elwynn extends Phaser.Scene {
-  player: Player | null = null;
+  private player: Player | null = null;
+  private boar: Enemy | null = null;
 
   constructor() {
     super("Elwyn scene");
@@ -18,6 +20,11 @@ export class Elwynn extends Phaser.Scene {
     this.load.spritesheet(SPRITES.PLAYER, "characters/alliance.png", {
       frameWidth: SIZES.PLAYER.WIDTH,
       frameHeight: SIZES.PLAYER.HEIGHT,
+    });
+
+    this.load.spritesheet(SPRITES.BOAR.base, "characters/boar.png", {
+      frameWidth: SIZES.BOAR.WIDTH,
+      frameHeight: SIZES.BOAR.HEIGHT,
     });
   }
 
@@ -34,6 +41,7 @@ export class Elwynn extends Phaser.Scene {
     const wallsLayer = map.createLayer(LAYERS.ELWYNN_WALLS, tileset, 0, 0);
 
     this.player = new Player(this, 400, 250, SPRITES.PLAYER);
+    this.boar = new Enemy(this, 600, 400, SPRITES.BOAR.base);
 
     // ! Follow the player with the camera
     this.cameras.main.startFollow(this.player);
