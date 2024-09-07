@@ -5,6 +5,7 @@ import { Entity } from "./entity";
 export class Player extends Entity {
   keys: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   textureKey: string | null = null;
+  private readonly moveSpeed = 50;
 
   constructor(scene: Durotar, x: number, y: number, texture: string) {
     super(scene, x, y, texture, SPRITES.PLAYER);
@@ -67,30 +68,35 @@ export class Player extends Entity {
       this.keys.up.isUp &&
       this.keys.down.isUp
     ) {
+      this.setVelocity(0, 0);
       this.anims.stop();
 
       return;
     }
 
-    const coordinatesChangesWithDelta = delta / 4;
+    // const coordinatesChangesWithDelta = delta / 4;
 
     if (this.keys.left.isDown) {
-      this.x -= coordinatesChangesWithDelta;
+      // this.x -= coordinatesChangesWithDelta;
+      this.setVelocity(-delta * this.moveSpeed, 0);
       this.anims.play("left", true);
     }
 
     if (this.keys.right.isDown) {
-      this.x += coordinatesChangesWithDelta;
+      // this.x += coordinatesChangesWithDelta;
+      this.setVelocity(delta * this.moveSpeed, 0);
       this.anims.play("right", true);
     }
 
     if (this.keys.up.isDown) {
-      this.y -= coordinatesChangesWithDelta;
+      // this.y -= coordinatesChangesWithDelta;
+      this.setVelocity(0, -delta * this.moveSpeed);
       this.anims.play("up", true);
     }
 
     if (this.keys.down.isDown) {
-      this.y += coordinatesChangesWithDelta;
+      // this.y += coordinatesChangesWithDelta;
+      this.setVelocity(0, delta * this.moveSpeed);
       this.anims.play("down", true);
     }
   }

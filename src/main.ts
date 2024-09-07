@@ -19,4 +19,11 @@ new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   pixelArt: true,
+  physics: {
+    default: "arcade",
+    arcade: {
+      // ! Enable debug mode to see the collision boxes
+      debug: true,
+    },
+  },
 });

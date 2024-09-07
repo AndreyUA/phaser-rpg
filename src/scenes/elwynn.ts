@@ -39,6 +39,17 @@ export class Elwynn extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
     // ! Prevent the camera from going out of the map
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    // ! Set the world bounds to the map size
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.player.setCollideWorldBounds(true);
+
+    // ! Enable collisions between the player and the walls
+    if (!wallsLayer) {
+      return;
+    }
+    this.physics.add.collider(this.player, wallsLayer);
+    wallsLayer.setCollisionByExclusion([-1]); // all tiles collide except the ones with index -1
   }
 
   update(_time: number, delta: number): void {
