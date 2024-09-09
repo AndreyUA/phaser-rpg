@@ -6,7 +6,7 @@ import { LAYERS, SIZES, SPRITES, TILES } from "../utils/constants";
 import { Enemy } from "../entities/enemy";
 
 export class Elwynn extends Phaser.Scene {
-  private player: Player | null = null;
+  public player: Player | null = null;
   private boar: Enemy | null = null;
 
   constructor() {
@@ -64,5 +64,7 @@ export class Elwynn extends Phaser.Scene {
     // ! time param --> current time in milliseconds from the start of the game
     // ! delta param --> time in milliseconds since the last frame
     this.player?.update(delta);
+
+    this.boar?.update();
   }
 }

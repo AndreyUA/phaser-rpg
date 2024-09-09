@@ -1,8 +1,10 @@
 import Phaser from "phaser";
 
+import { Elwynn } from "../scenes/elwynn";
+
 export class Entity extends Phaser.Physics.Arcade.Sprite {
   constructor(
-    scene: Phaser.Scene,
+    scene: Elwynn,
     x: number,
     y: number,
     texture: string,
