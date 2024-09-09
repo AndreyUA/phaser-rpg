@@ -11,5 +11,23 @@ export class Enemy extends Entity {
     type?: string
   ) {
     super(scene, x, y, texture, SPRITES.BOAR.base);
+
+    this.cycleTween();
+  }
+
+  cycleTween(): void {
+    this.scene.tweens.add({
+      targets: this,
+      duration: 2_000,
+      repeat: -1,
+      yoyo: true,
+      x: this.x + 100,
+      onRepeat: () => {
+        this.setFlipX(true);
+      },
+      onYoyo: () => {
+        this.setFlipX(false);
+      },
+    });
   }
 }
