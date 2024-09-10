@@ -2,15 +2,21 @@ import { Elwynn } from "../scenes/elwynn";
 import { SPRITES } from "../utils/constants";
 import { Entity } from "./entity";
 
+interface PlayerTextures {
+  base: string;
+  fight: string;
+}
+
 export class Player extends Entity {
   scene: Elwynn;
   keys: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   textureKey: string | null = null;
   enemies: Array<Entity> = [];
+  isAttacking: boolean = false;
   private readonly moveSpeed = 10;
 
-  constructor(scene: Elwynn, x: number, y: number, texture: string) {
-    super(scene, x, y, texture, SPRITES.PLAYER);
+  constructor(scene: Elwynn, x: number, y: number, texture: PlayerTextures) {
+    super(scene, x, y, texture.base, SPRITES.PLAYER.base);
 
     this.scene = scene;
 
@@ -19,9 +25,9 @@ export class Player extends Entity {
     }
 
     this.keys = this.scene.input.keyboard.createCursorKeys();
-    const animations = this.scene.anims;
+    const animations = this.anims;
     const animationFrameRate = 9;
-    this.textureKey = texture;
+    this.textureKey = texture.base;
 
     // Set the size and offset of the player to make the collisions more accurate
     this.setSize(28, 32);
@@ -29,44 +35,53 @@ export class Player extends Entity {
     // Reduce player's size
     this.setScale(0.8);
 
-    animations.create({
-      key: "down",
-      frames: animations.generateFrameNumbers(this.textureKey, {
-        start: 0,
-        end: 2,
-      }),
-      frameRate: animationFrameRate,
-      repeat: -1,
-    });
-    animations.create({
-      key: "left",
-      frames: animations.generateFrameNumbers(this.textureKey, {
-        start: 12,
-        end: 14,
-      }),
-      frameRate: animationFrameRate,
-      repeat: -1,
-    });
-    animations.create({
-      key: "right",
-      frames: animations.generateFrameNumbers(this.textureKey, {
-        start: 24,
-        end: 26,
-      }),
-      frameRate: animationFrameRate,
-      repeat: -1,
-    });
-    animations.create({
-      key: "up",
-      frames: animations.generateFrameNumbers(this.textureKey, {
-        start: 36,
-        end: 38,
-      }),
-      frameRate: animationFrameRate,
-      repeat: -1,
-    });
+    this.createAnimations(
+      "down",
+      this.textureKey,
+      0,
+      2,
+      animations,
+      animationFrameRate
+    );
+    this.createAnimations(
+      "left",
+      this.textureKey,
+      12,
+      14,
+      animations,
+      animationFrameRate
+    );
+    this.createAnimations(
+      "right",
+      this.textureKey,
+      24,
+      26,
+      animations,
+      animationFrameRate
+    );
+    this.createAnimations(
+      "up",
+      this.textureKey,
+      36,
+      38,
+      animations,
+      animationFrameRate
+    );
+    this.createAnimations(
+      "fight",
+      texture.fight,
+      3,
+      6,
+      animations,
+      animationFrameRate,
+      0
+    );
 
     this.initKeysListeners();
+
+    this.on("animationcomplete", () => {
+      this.isAttacking = false;
+    });
   }
 
   attack(target: Entity): void {
@@ -86,9 +101,32 @@ export class Player extends Entity {
     this.enemies = enemies;
   }
 
+  private createAnimations(
+    key: string,
+    textureKey: string,
+    start: number,
+    end: number,
+    animations: Phaser.Animations.AnimationState,
+    frameRate: number,
+    repeat: number = -1
+  ): void {
+    animations.create({
+      key,
+      frames: animations.generateFrameNumbers(textureKey, {
+        start,
+        end,
+      }),
+      frameRate,
+      repeat,
+    });
+  }
+
   private initKeysListeners(): void {
     this.scene.input.keyboard!.on("keydown-SPACE", () => {
       const target = this.findTarget(this.enemies);
+      this.anims.play("fight");
+      this.isAttacking = true;
+      this.setVelocity(0, 0);
       this.attack(target);
     });
   }
@@ -124,42 +162,55 @@ export class Player extends Entity {
       return;
     }
 
-    if (
-      this.keys.left.isUp &&
-      this.keys.right.isUp &&
-      this.keys.up.isUp &&
-      this.keys.down.isUp
-    ) {
-      this.setVelocity(0, 0);
-      this.anims.stop();
-
-      return;
-    }
-
     // const coordinatesChangesWithDelta = delta / 4;
 
     if (this.keys.left.isDown) {
       // this.x -= coordinatesChangesWithDelta;
       this.setVelocity(-delta * this.moveSpeed, 0);
       this.anims.play("left", true);
+
+      return;
     }
 
     if (this.keys.right.isDown) {
       // this.x += coordinatesChangesWithDelta;
       this.setVelocity(delta * this.moveSpeed, 0);
       this.anims.play("right", true);
+
+      return;
     }
 
     if (this.keys.up.isDown) {
       // this.y -= coordinatesChangesWithDelta;
       this.setVelocity(0, -delta * this.moveSpeed);
       this.anims.play("up", true);
+
+      return;
     }
 
     if (this.keys.down.isDown) {
       // this.y += coordinatesChangesWithDelta;
       this.setVelocity(0, delta * this.moveSpeed);
       this.anims.play("down", true);
+
+      return;
+    }
+
+    if (this.isAttacking) {
+      this.setVelocity(0, 0);
+
+      return;
+    }
+
+    if (
+      this.keys.left.isUp &&
+      this.keys.right.isUp &&
+      this.keys.up.isUp &&
+      this.keys.down.isUp &&
+      !this.isAttacking
+    ) {
+      this.setVelocity(0, 0);
+      this.anims.stop();
     }
   }
 }

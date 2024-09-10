@@ -18,10 +18,19 @@ export class Elwynn extends Phaser.Scene {
     this.load.image(TILES.ELWYNN, "maps/Summer_Tiles.png");
     this.load.tilemapTiledJSON("elwynn-map", "maps/summer.json");
 
-    this.load.spritesheet(SPRITES.PLAYER, "characters/alliance.png", {
+    this.load.spritesheet(SPRITES.PLAYER.base, "characters/alliance.png", {
       frameWidth: SIZES.PLAYER.WIDTH,
       frameHeight: SIZES.PLAYER.HEIGHT,
     });
+
+    this.load.spritesheet(
+      SPRITES.PLAYER.fight,
+      "characters/alliance-fight-small.png",
+      {
+        frameWidth: SIZES.PLAYER.WIDTH,
+        frameHeight: SIZES.PLAYER.HEIGHT,
+      }
+    );
 
     this.load.spritesheet(SPRITES.BOAR.base, "characters/boar.png", {
       frameWidth: SIZES.BOAR.WIDTH,
