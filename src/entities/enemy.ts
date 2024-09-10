@@ -70,6 +70,30 @@ export class Enemy extends Entity {
     });
   }
 
+  attack(target: Entity): void {
+    const time = Math.floor(this.scene.game.loop.time);
+
+    if (time % 2000 <= 3) {
+      target.takeDamage(10);
+    }
+  }
+
+  takeDamage(damage: number): void {
+    super.takeDamage(damage);
+
+    if (this.health <= 0) {
+      this.deactivate();
+    }
+  }
+
+  deactivate(): void {
+    this.stopCycleTween();
+    this.setPosition(this.initialPosition.x, this.initialPosition.y);
+    this.setVisible(false);
+    this.isAlive = false;
+    this.destroy();
+  }
+
   update(): void {
     // ! Here is a logic regarding aggro enemy to the player
     // 1. Calculate distance between player and enemy
@@ -99,6 +123,7 @@ export class Enemy extends Entity {
       // 3.1 The beginning of the fight
       if (distanceToPlayer < this.attackRange) {
         this.setVelocity(0, 0);
+        this.attack(player);
       }
       // 3.2 The end of the fight - player is too far away and the enemy should return to the initial position
       if (distanceToInitialPosition > this.followRange) {

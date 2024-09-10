@@ -66,5 +66,8 @@ export class Elwynn extends Phaser.Scene {
     this.player?.update(delta);
 
     this.boar?.update();
+
+    // TODO: Remove this line
+    console.log(this.player?.health);
   }
 }
