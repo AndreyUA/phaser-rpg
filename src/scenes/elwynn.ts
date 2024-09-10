@@ -7,7 +7,8 @@ import { Enemy } from "../entities/enemy";
 
 export class Elwynn extends Phaser.Scene {
   public player: Player | null = null;
-  private boar: Enemy | null = null;
+  public boar1: Enemy | null = null;
+  public boar2: Enemy | null = null;
 
   constructor() {
     super("Elwyn scene");
@@ -41,7 +42,9 @@ export class Elwynn extends Phaser.Scene {
     const wallsLayer = map.createLayer(LAYERS.ELWYNN_WALLS, tileset, 0, 0);
 
     this.player = new Player(this, 400, 250, SPRITES.PLAYER);
-    this.boar = new Enemy(this, 600, 400, SPRITES.BOAR.base);
+    this.boar1 = new Enemy(this, 600, 400, SPRITES.BOAR.base);
+    this.boar2 = new Enemy(this, 300, 700, SPRITES.BOAR.base);
+    this.player.setEnemies([this.boar1, this.boar2]);
 
     // ! Follow the player with the camera
     this.cameras.main.startFollow(this.player);
@@ -65,9 +68,7 @@ export class Elwynn extends Phaser.Scene {
     // ! delta param --> time in milliseconds since the last frame
     this.player?.update(delta);
 
-    this.boar?.update();
-
-    // TODO: Remove this line
-    console.log(this.player?.health);
+    this.boar1?.update();
+    this.boar2?.update();
   }
 }

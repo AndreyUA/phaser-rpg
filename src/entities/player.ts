@@ -3,13 +3,16 @@ import { SPRITES } from "../utils/constants";
 import { Entity } from "./entity";
 
 export class Player extends Entity {
+  scene: Elwynn;
   keys: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   textureKey: string | null = null;
-  // TODO: check if the speed is correct
+  enemies: Array<Entity> = [];
   private readonly moveSpeed = 10;
 
   constructor(scene: Elwynn, x: number, y: number, texture: string) {
     super(scene, x, y, texture, SPRITES.PLAYER);
+
+    this.scene = scene;
 
     if (!this.scene.input.keyboard) {
       return;
@@ -62,6 +65,58 @@ export class Player extends Entity {
       frameRate: animationFrameRate,
       repeat: -1,
     });
+
+    this.initKeysListeners();
+  }
+
+  attack(target: Entity): void {
+    const distanceToEnemy = Phaser.Math.Distance.Between(
+      this.x,
+      this.y,
+      target.x,
+      target.y
+    );
+
+    if (distanceToEnemy < 50) {
+      target.takeDamage(25);
+    }
+  }
+
+  setEnemies(enemies: Array<Entity>): void {
+    this.enemies = enemies;
+  }
+
+  private initKeysListeners(): void {
+    this.scene.input.keyboard!.on("keydown-SPACE", () => {
+      const target = this.findTarget(this.enemies);
+      this.attack(target);
+    });
+  }
+
+  private findTarget(enemies: Array<Entity>): Entity {
+    const nearestEnemy = enemies.reduce((nearest: Entity, current: Entity) => {
+      const distanceToCurrent = Phaser.Math.Distance.Between(
+        this.x,
+        this.y,
+        current.x,
+        current.y
+      );
+
+      const distanceToNearest = Phaser.Math.Distance.Between(
+        this.x,
+        this.y,
+        nearest.x,
+        nearest.y
+      );
+
+      if (distanceToCurrent < distanceToNearest) {
+        return current;
+      }
+
+      return nearest;
+    }, enemies[0]);
+
+    return nearestEnemy;
   }
 
   update(delta: number): void {
