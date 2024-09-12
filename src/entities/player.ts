@@ -1,5 +1,6 @@
 import { Elwynn } from "../scenes/elwynn";
 import { SPRITES } from "../utils/constants";
+import { Enemy } from "./enemy";
 import { Entity } from "./entity";
 
 interface PlayerTextures {
@@ -13,6 +14,8 @@ export class Player extends Entity {
   textureKey: string | null = null;
   enemies: Array<Entity> = [];
   isAttacking: boolean = false;
+  playerHealthBar: Phaser.GameObjects.Graphics | null = null;
+  enemyHealthBar: Phaser.GameObjects.Graphics | null = null;
   private readonly moveSpeed = 10;
 
   constructor(scene: Elwynn, x: number, y: number, texture: PlayerTextures) {
@@ -82,6 +85,8 @@ export class Player extends Entity {
     this.on("animationcomplete", () => {
       this.isAttacking = false;
     });
+
+    this.drawPlayerHealthBar();
   }
 
   attack(target: Entity): void {
@@ -128,6 +133,7 @@ export class Player extends Entity {
       this.isAttacking = true;
       this.setVelocity(0, 0);
       this.attack(target);
+      this.drawEnemyHealthBar(target as Enemy);
     });
   }
 
@@ -157,7 +163,35 @@ export class Player extends Entity {
     return nearestEnemy;
   }
 
+  private drawPlayerHealthBar(): void {
+    this.playerHealthBar = this.scene.add.graphics();
+    this.playerHealthBar.setScrollFactor(0);
+    this.drawHealthBar(this.playerHealthBar, 10, 10, this.health / 100);
+  }
+
+  private drawEnemyHealthBar(target: Enemy): void {
+    this.enemyHealthBar = this.scene.add.graphics();
+    this.enemyHealthBar.setScrollFactor(0);
+    this.drawHealthBar(this.enemyHealthBar, 10, 30, target.health / 100);
+  }
+
+  private drawHealthBar(
+    graphics: Phaser.GameObjects.Graphics,
+    x: number,
+    y: number,
+    percentage: number
+  ): void {
+    // Background black rectangle
+    graphics.fillStyle(0x000000, 1);
+    graphics.fillRect(x, y, 100, 10);
+
+    // Dynamic green health bar
+    graphics.fillStyle(0x00ff00, 1);
+    graphics.fillRect(x, y, 100 * percentage, 10);
+  }
+
   update(delta: number): void {
+    this.drawPlayerHealthBar();
     if (!this.keys) {
       return;
     }
