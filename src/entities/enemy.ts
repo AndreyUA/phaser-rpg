@@ -92,6 +92,7 @@ export class Enemy extends Entity {
     this.setVisible(false);
     this.isAlive = false;
     this.destroy();
+    this.scene.killCounter += 1;
   }
 
   update(): void {

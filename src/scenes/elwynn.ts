@@ -9,6 +9,8 @@ export class Elwynn extends Phaser.Scene {
   public player: Player | null = null;
   public boar1: Enemy | null = null;
   public boar2: Enemy | null = null;
+  killText: Phaser.GameObjects.Text | null = null;
+  killCounter: number = 0;
 
   constructor() {
     super("Elwyn scene");
@@ -70,6 +72,13 @@ export class Elwynn extends Phaser.Scene {
     }
     this.physics.add.collider(this.player, wallsLayer);
     wallsLayer.setCollisionByExclusion([-1]); // all tiles collide except the ones with index -1
+
+    this.killText = this.add.text(770, 10, `${this.killCounter}`, {
+      fontFamily: "Arial",
+      fontSize: "24px",
+      color: "#ffffff",
+    });
+    this.killText.setScrollFactor(0);
   }
 
   update(_time: number, delta: number): void {
@@ -79,5 +88,6 @@ export class Elwynn extends Phaser.Scene {
 
     this.boar1?.update();
     this.boar2?.update();
+    this.killText?.setText(`${this.killCounter}`);
   }
 }
